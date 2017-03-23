@@ -1,0 +1,23 @@
+{
+  "name": "gr8shivam/laravel-sms-api",
+  "version":"1.0.0",
+  "description": "Laravel package to provide SMS API integration. Any SMS vendor that provides REST API can be used. SMS-API channel for Laravel notifications also included.",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Shivam Agarwal",
+      "email": "gr8shivam25@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.6.4",
+    "illuminate/support": ">=5.1",
+    "guzzlehttp/guzzle": "~6.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Gr8Shivam\\SmsApi\\": "src"
+    }
+  },
+  "minimum-stability":"dev"
+}
