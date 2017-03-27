@@ -4,7 +4,7 @@ Laravel package to provide SMS API integration. Any SMS vendor that provides RES
 ## Installation
 Require this package with composer:
 ```
-composer require gr8shivam/sms-api
+composer require gr8shivam/laravel-sms-api
 ```
 Once the package is added, add the ServiceProvider to the providers array in ```config/app.php```:
 ```
