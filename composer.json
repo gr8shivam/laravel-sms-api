@@ -30,5 +30,15 @@
       "Gr8Shivam\\SmsApi\\": "src"
     }
   },
-  "minimum-stability":"dev"
+  "minimum-stability":"stable",
+  "extra": {
+        "laravel": {
+            "providers": [
+                "Gr8Shivam\\SmsApi\\SmsApiServiceProvider"
+            ],
+            "aliases": {
+                "SmsApi": "Gr8Shivam\\SmsApi\\SmsApiFacade"
+            }
+        }
+    }
 }
