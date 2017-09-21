@@ -2,26 +2,41 @@
 Laravel package to provide SMS API integration. Any SMS vendor that provides REST API can be used.
 
 ## Installation
+
+### Install Package
 Require this package with composer:
 ```
 composer require gr8shivam/laravel-sms-api
 ```
-Once the package is added, add the ServiceProvider to the providers array in ```config/app.php```:
+### Add Service Provider & Facade
+
+#### For Laravel 5.5+
+Once the package is added, the service provider and facade will be autodiscovered.
+
+#### For Older versions of Laravel
+Add the ServiceProvider to the providers array in `config/app.php`:
 ```
 Gr8Shivam\SmsApi\SmsApiServiceProvider::class,
 ```
+
+Add the Facade to the aliases array in `config/app.php`:
+```
+'SmsApi': Gr8Shivam\SmsApi\SmsApiFacade::class,
+```
+
+### Publish Config
 Once done, publish the config to your config folder using:
 ```
 php artisan vendor:publish --provider="Gr8Shivam\SmsApi\SmsApiServiceProvider"
 ```
 
 ## Configuration
-Once the config file is published, open ```config/sms-api.php```
+Once the config file is published, open `config/sms-api.php`
 
 #### Global config
-```country_code``` : The default country code to be used
+`country_code` : The default country code to be used
 
-```default``` : Default gateway 
+`default` : Default gateway 
 
 #### Gateway Config
 Use can define multiple gateway configs like this:-
@@ -45,28 +60,62 @@ Use can define multiple gateway configs like this:-
 
 ## Usage
 ### Direct Use
-Use the SmsApi class where you want to use it.
-```
-use Gr8Shivam\SmsApi\SmsApi;
-```
-Then create an object of the class:-
-```
-$sms = new SmsApi();
-```
-Then use the sendMessage method:-
-```
-$sms->sendMessage("TO","MESSAGE");
-```
+Use the `smsapi()` helper function or `SmsApi` facade to send the messages.
 
-```TO```: Single mobile number or Multiple comma-separated mobile numbers
-```MESSAGE```: Message to be sent
+`TO`: Single mobile number or Multiple comma-separated mobile numbers
 
-In order to use a different gateway, add ```->gateway('GATEWAY_NAME')``` like:-
-```
-$sms->sendMessage("TO","MESSAGE")->gateway('GATEWAY_NAME');
-```
+`MESSAGE`: Message to be sent
+
+#### Using Helper function
+- Basic Usage `smsapi("TO", "Message");` or `smsapi()->sendMessage("TO","MESSAGE");`
+
+- Adding extra parameters `smsapi("TO", "Message", ["param1" => "val"]);` or `smsapi()->sendMessage("TO", "Message", ["param1" => "val"]);`
+
+- Using a different gateway `smsapi()->gateway('GATEWAY_NAME')->sendMessage("TO", "Message");`
+
+- Using a different country code `smsapi()->countryCode('COUNTRY_CODE')->sendMessage("TO", "Message");` 
+
+- Sending message to multiple mobiles `smsapi(["Mobile1","Mobile2","Mobile3"], "Message");` or `smsapi()->sendMessage(["Mobile1","Mobile2","Mobile3"],"MESSAGE");`
+
+#### Using SmsApi facade
+- Basic Usage `SmsApi::sendMessage("TO","MESSAGE");`
+
+- Adding extra parameters `SmsApi::sendMessage("TO", "Message", ["param1" => "val"]);`
+
+- Using a different gateway `SmsApi::gateway('GATEWAY_NAME')->sendMessage("TO", "Message");`
+
+- Using a different country code `SmsApi::countryCode('COUNTRY_CODE')->sendMessage("TO", "Message");` 
+
+- Sending message to multiple mobiles `SmsApi::sendMessage(["Mobile1","Mobile2","Mobile3"],"MESSAGE");`
 
 ### Use in Notifications
+
+#### Setting up the Route for Notofication
+Add the method `routeNotificationForSmsApi()` to your Notifiable model :
+```
+public function routeNotificationForSmsApi() {
+        return $this->phone; //Name of the field to be used as mobile
+    }    
+```
+
+By default, your User model uses Notifiable.
+
+#### Setting up Notification
+
+Add 
+
+`use Gr8Shivam\SmsApi\Notifications\SmsApiChannel;`
+
+and 
+
+`use Gr8Shivam\SmsApi\Notifications\SmsApiMessage;`
+
+to your notification. 
+
+You can create a new notification with `php artisan make:notification NOTIFICATION_NAME`
+
+In the `via` function inside your notification, add `return [SmsApiChannel::class];` and add a new function `toSmsApi($notifiable)` to return the message body and parameters.
+
 Notification example:-
 ```
 namespace App\Notifications;
@@ -89,13 +138,7 @@ class ExampleNotification extends Notification
     }
 }
 ```
-Add the method ```routeNotificationForSmsApi()``` to your Notifiable model :
-```
-public function routeNotificationForSmsApi()
-    {
-        return $this->phone; //Name of the field to be used as mobile
-    }    
-```
+You can also use `->params(["param1" => "val"])` to add extra parameters to the request.
 
 ## Support
 Feel free to post your issues in the issues section.
