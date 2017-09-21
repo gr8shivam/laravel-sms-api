@@ -18,7 +18,9 @@ class SmsApiServiceProvider extends ServiceProvider
     public function boot()
     {
         $configPath = __DIR__ . '/config/' . $this->configName . '.php';
-        $this->publishes([$configPath => config_path($this->configName . '.php')], 'config');
+        $this->publishes([
+            $configPath => config_path($this->configName . '.php')
+        ], 'config');
     }
 
     /**
@@ -30,10 +32,8 @@ class SmsApiServiceProvider extends ServiceProvider
     {
         $configPath = __DIR__ . '/config/' . $this->configName . '.php';
         $this->mergeConfigFrom($configPath, $this->configName);
-        $this->app->bind(SmsApi::class, SmsApi::class);
-        $this->app->singleton('smsapi', function ($app) {
+        $this->app->bind('smsapi', function () {
             return new SmsApi();
         });
-        $this->app->alias('smsapi', SmsApi::class);
     }
 }

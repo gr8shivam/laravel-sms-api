@@ -11,6 +11,13 @@ class SmsApiMessage
     public $content;
 
     /**
+     * Additional Parameters.
+     *
+     * @var array
+     */
+    public $params;
+
+    /**
      * The message type.
      *
      * @var string
@@ -20,12 +27,12 @@ class SmsApiMessage
     /**
      * Create a new message instance.
      *
-     * @param  string  $content
-     * @return void
+     * @param  string $content
+     * @param array $params
      */
-    public function __construct($content = '')
-    {
+    public function __construct($content = '', $params = null) {
         $this->content = $content;
+        $this->params = $params;
     }
 
     /**
@@ -34,9 +41,21 @@ class SmsApiMessage
      * @param  string  $content
      * @return $this
      */
-    public function content($content)
-    {
+    public function content($content) {
         $this->content = $content;
+        return $this;
+    }
+
+
+    /**
+     * Set the message params.
+     *
+     * @param  array  $params
+     * @return $this
+     */
+    public function params($params)
+    {
+        $this->params = $params;
         return $this;
     }
 
@@ -45,8 +64,7 @@ class SmsApiMessage
      *
      * @return $this
      */
-    public function unicode()
-    {
+    public function unicode() {
         $this->type = 'unicode';
         return $this;
     }

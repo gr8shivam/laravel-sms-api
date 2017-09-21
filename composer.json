@@ -1,6 +1,6 @@
 {
-  "name": "gr8shivam/laravel-sms-api",
-  "version":"1.0.0",
+  "name": "local/laravel-sms-api",
+  "version":"2.0.0",
   "description": "Laravel package to provide SMS API integration. Any SMS vendor that provides REST API can be used. SMS-API channel for Laravel notifications also included.",
   "license": "MIT",
   "keywords": [
@@ -28,7 +28,10 @@
   "autoload": {
     "psr-4": {
       "Gr8Shivam\\SmsApi\\": "src"
-    }
+    },
+    "files": [
+      "src/functions.php"
+    ]
   },
   "minimum-stability":"stable",
   "extra": {

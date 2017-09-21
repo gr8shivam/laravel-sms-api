@@ -14,8 +14,7 @@ class SmsApiChannel
     /**
      * @param SmsApi $client
      */
-    public function __construct(SmsApi $client)
-    {
+    public function __construct(SmsApi $client) {
         $this->client = $client;
     }
 
@@ -38,6 +37,6 @@ class SmsApiChannel
             $message = new SmsApiMessage($message);
         }
 
-        $this->client->sendMessage($mobile,$message->content);
+        $this->client->sendMessage($mobile,$message->content,$message->params);
     }
 }
