@@ -1,3 +1,5 @@
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/gr8shivam/laravel-sms-api/master/LICENSE) [![Packagist](https://img.shields.io/packagist/v/gr8shivam/laravel-sms-api.svg)](https://packagist.org/packages/gr8shivam/laravel-sms-api) [![Packagist](https://img.shields.io/packagist/dt/gr8shivam/laravel-sms-api.svg)](https://packagist.org/packages/gr8shivam/laravel-sms-api)
+
 # Integrate SMS API with Laravel
 Laravel package to provide SMS API integration. Any SMS vendor that provides REST API can be used.
 
