@@ -33,6 +33,11 @@
       "src/functions.php"
     ]
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Gr8Shivam\\SmsApi\\Tests\\": "tests/"
+    }
+  },
   "minimum-stability":"stable",
   "extra": {
         "laravel": {
