@@ -21,9 +21,10 @@ class SmsApiChannel
     /**
      * Send the given notification.
      *
-     * @param  mixed  $notifiable
-     * @param  \Illuminate\Notifications\Notification  $notification
+     * @param  mixed $notifiable
+     * @param  \Illuminate\Notifications\Notification $notification
      * @return void
+     * @throws \Gr8Shivam\SmsApi\Exception\InvalidMethodException
      */
     public function send($notifiable, Notification $notification)
     {
@@ -37,6 +38,6 @@ class SmsApiChannel
             $message = new SmsApiMessage($message);
         }
 
-        $this->client->sendMessage($mobile,$message->content,$message->params);
+        $this->client->sendMessage($mobile,$message->content,$message->params,$message->headers);
     }
 }

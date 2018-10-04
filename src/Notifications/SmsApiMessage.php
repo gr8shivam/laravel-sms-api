@@ -18,6 +18,13 @@ class SmsApiMessage
     public $params;
 
     /**
+     * Add Headers.
+     *
+     * @var array
+     */
+    public $headers=[];
+
+    /**
      * The message type.
      *
      * @var string
@@ -29,10 +36,12 @@ class SmsApiMessage
      *
      * @param  string $content
      * @param array $params
+     * @param array $headers
      */
-    public function __construct($content = '', $params = null) {
+    public function __construct($content = '', $params = null, $headers=[]) {
         $this->content = $content;
         $this->params = $params;
+        $this->headers = $headers;
     }
 
     /**
@@ -46,7 +55,6 @@ class SmsApiMessage
         return $this;
     }
 
-
     /**
      * Set the message params.
      *
@@ -56,6 +64,16 @@ class SmsApiMessage
     public function params($params)
     {
         $this->params = $params;
+        return $this;
+    }
+
+    /**
+     * @param $headers
+     * @return $this
+     */
+    public function headers($headers)
+    {
+        $this->headers = $headers;
         return $this;
     }
 
