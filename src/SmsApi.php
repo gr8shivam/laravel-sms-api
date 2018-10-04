@@ -2,7 +2,9 @@
 
 namespace Gr8Shivam\SmsApi;
 
+use Gr8Shivam\SmsApi\Exception\InvalidMethodException;
 use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Log;
 use GuzzleHttp\Exception\RequestException;
 
@@ -118,32 +120,6 @@ class SmsApi
     }
 
     /**
-     * Generate Request URL
-     *
-     * @param $mobile
-     * @param $message
-     * @param array $extra_params
-     * @return string
-     */
-    private function getUrl($mobile, $message, $extra_params=null) {
-        $params = $this->config['params']['others'];
-        $send_to_param_name = $this->config['params']['send_to_param_name'];
-        $msg_param_name = $this->config['params']['msg_param_name'];
-        $params[$send_to_param_name] = $mobile;
-        $params[$msg_param_name] = $message;
-        $url = $this->config['url'];
-        if($extra_params){
-            $params = array_merge($params,$extra_params);
-        }
-        foreach($params as $key=>$val) {
-            $this->request.= $key."=".urlencode($val);
-            $this->request.= "&";
-        }
-        $this->request = substr($this->request, 0, strlen($this->request)-1);
-        return $url.$this->request;
-    }
-
-    /**
      * Send message
      *
      * @param $to
@@ -151,17 +127,85 @@ class SmsApi
      * @param array $extra_params
      * @return $this
      */
-    public function sendMessage($to, $message, $extra_params=null) {
+    public function sendMessage($to, $message, $extra_params=null, $headers=[]) {
         if($this->gateway==''){
             $this->loadDefaultGateway();
         }
         $this->loadCredentialsFromConfig();
         $mobile = $this->config['add_code']?$this->addCountryCode($to):$to;
+
+        $request_method = isset($this->config['method'])?$this->config['method']:'GET';
+
+        $url = $this->config['url'];
         if(is_array($mobile)){
-            $mobile = $this->composeBulkMobile($mobile);
+            if(!(isset($this->config['json']) && $this->config['json'])){
+                $mobile = $this->composeBulkMobile($mobile);
+            }
         }
+
+        $wrapper = isset($this->config['wrapper'])?$this->config['wrapper']:NULL;
+
+        //Building Request
+        $params = $this->config['params']['others'];
+
+        $send_to_param_name = $this->config['params']['send_to_param_name'];
+        $msg_param_name = $this->config['params']['msg_param_name'];
+
+        if($wrapper){
+            $send_vars[$send_to_param_name] = $mobile;
+            $send_vars[$msg_param_name] = $message;
+        }
+        else{
+            $params[$send_to_param_name] = $mobile;
+            $params[$msg_param_name] = $message;
+        }
+
+        if($extra_params){
+            $params = array_merge($params,$extra_params);
+        }
+
         try {
-            $this->response = $this->getClient()->get($this->getUrl($mobile,$message,$extra_params))->getBody()->getContents();
+            $request = new Request($request_method, $url);
+            if($request_method == "GET"){
+                $promise = $this->getClient()->sendAsync(
+                    $request,
+                    [
+                        'query' => $params,
+                        'headers' => $headers
+                    ]
+                );
+            }
+            elseif ($request_method == "POST"){
+                $payload = $wrapper?array_merge(array($wrapper => array($send_vars)),$params):$params;
+
+                if((isset($this->config['json']) && $this->config['json'])){
+                    $promise = $this->getClient()->sendAsync(
+                        $request,
+                        [
+                            'json' => $payload,
+                            'headers' => $headers
+                        ]
+                    );
+                }
+                else{
+                    $promise = $this->getClient()->sendAsync(
+                        $request,
+                        [
+                            'query' => $params,
+                            'headers' => $headers
+                        ]
+                    );
+                }
+            }
+            else{
+                throw new InvalidMethodException(
+                    sprintf("Only GET and POST methods allowed.")
+                );
+            }
+
+            $this->response = $promise->wait()->getBody()->getContents();
+
+
         } catch (RequestException $e) {
             if ($e->hasResponse()) {
                 $this->response = $e->getResponseBodySummary($e->getResponse());
