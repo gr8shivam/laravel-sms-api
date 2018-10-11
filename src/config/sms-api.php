@@ -3,7 +3,7 @@
 return [
 
     'country_code' => '91', //Country code to be added
-    'default' => env('SMS_API_DEFAULT_GATEWAY', 'msg91'), //Choose default gateway
+    'default' => env('SMS_API_DEFAULT_GATEWAY', 'gateway_name'), //Choose default gateway
     
 //    Gateway Configuration
     'gateway_name' => [
@@ -19,8 +19,13 @@ return [
                 //More params can be added
             ],
         ],
-        'json' => true, // Use if you want the params to be sent in JSON format instead of query params (true/false)
-        'wrapper' => 'sms', //Optional, use only if you want the JSON request to be wrapped (accepts wrapper name)
+        'headers' => [
+            'header1' => '',
+            'header2' => '',
+            //More headers can be added
+        ],
+//        'json' => true, // OPTIONAL: Use if you want the params to be sent in JSON format instead of query params (accepts true/false)
+//        'wrapper' => 'sms', // OPTIONAL: Use only if you want the JSON request to be wrapped (accepts wrapper name)
         'add_code' => true, //Include Country Code (true/false)
     ],
     

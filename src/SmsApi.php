@@ -69,11 +69,11 @@ class SmsApi
      * @param $to
      * @param $message
      * @param array $extra_params
-     * @param array $headers
+     * @param array $extra_headers
      * @return $this
      * @throws InvalidMethodException
      */
-    public function sendMessage($to, $message, $extra_params = null, $headers = [])
+    public function sendMessage($to, $message, $extra_params = null, $extra_headers = [])
     {
         if ($this->gateway == '') {
             $this->loadDefaultGateway();
@@ -93,6 +93,8 @@ class SmsApi
 
         $params = $this->config['params']['others'];
 
+        $headers = isset($this->config['headers']) ? $this->config['headers'] : [];
+
         //Check wrapper for JSON Payload
         $wrapper = isset($this->config['wrapper']) ? $this->config['wrapper'] : NULL;
 
@@ -109,6 +111,10 @@ class SmsApi
 
         if ($extra_params) {
             $params = array_merge($params, $extra_params);
+        }
+
+        if($extra_headers){
+            $headers = array_merge($headers, $extra_headers);
         }
 
         try {
