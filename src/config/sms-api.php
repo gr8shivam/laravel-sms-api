@@ -25,7 +25,7 @@ return [
             //More headers can be added
         ],
 //        'json' => true, // OPTIONAL: Use if you want the params to be sent in JSON format instead of query params (accepts true/false)
-//        'wrapper' => 'sms', // OPTIONAL: Use only if you want the JSON request to be wrapped (accepts wrapper name)
+//        'wrapper' => 'wrapper_name', // OPTIONAL: Use only if you want the JSON request to be wrapped (accepts wrapper name)
         'add_code' => true, //Include Country Code (true/false)
     ],
     

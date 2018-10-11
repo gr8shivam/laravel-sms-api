@@ -45,6 +45,7 @@ Use can define multiple gateway configs like this:-
 ```
 //    Gateway Configuration
     'gateway_name' => [
+        'method' => 'GET', //Choose Request Method (GET/POST) Default:GET
         'url' => 'BaseUrl', //Base URL
         'params' => [
             'send_to_param_name' => '', //Send to Parameter Name
@@ -56,8 +57,34 @@ Use can define multiple gateway configs like this:-
                 //More params can be added
             ],
         ],
+        'headers' => [
+            'header1' => '',
+            'header2' => '',
+            //More headers can be added
+        ],
+//        'json' => true, // OPTIONAL: Use if you want the params to be sent in JSON format instead of query params (accepts true/false)
+//        'wrapper' => 'wrapper_name', // OPTIONAL: Use only if you want the JSON request to be wrapped (accepts string)
         'add_code' => true, //Include Country Code (true/false)
     ],
+```
+
+#### Special Parameters in Gateway Config
+
+##### `json` Parameter
+The `json` parameter accepts `true/false`. When `true`, it sends `params` as a JSON payload. It also takes care of `'Content-Type' => 'application/json'` header.
+
+##### `wrapper` Parameter
+The `wrapper` is a special parameter which will be required only with some gateways. It wraps the JSON payload in the following structure:
+```
+"wrapper_name": [
+    {
+      "message": "Message",
+      "to": [
+        "Receipient1",
+        "Receipient2"
+      ]
+    }
+  ]
 ```
 
 ## Usage
@@ -73,6 +100,8 @@ Use the `smsapi()` helper function or `SmsApi` facade to send the messages.
 
 - Adding extra parameters `smsapi("TO", "Message", ["param1" => "val"]);` or `smsapi()->sendMessage("TO", "Message", ["param1" => "val"]);`
 
+- Adding extra headers `smsapi("TO", "Message", ["param1" => "val"], ["header1" => "val"]);` or `smsapi()->sendMessage("TO", "Message", ["param1" => "val"], ["header1" => "val"]);`
+
 - Using a different gateway `smsapi()->gateway('GATEWAY_NAME')->sendMessage("TO", "Message");`
 
 - Using a different country code `smsapi()->countryCode('COUNTRY_CODE')->sendMessage("TO", "Message");` 
@@ -83,6 +112,8 @@ Use the `smsapi()` helper function or `SmsApi` facade to send the messages.
 - Basic Usage `SmsApi::sendMessage("TO","MESSAGE");`
 
 - Adding extra parameters `SmsApi::sendMessage("TO", "Message", ["param1" => "val"]);`
+
+- Adding extra headers `SmsApi::sendMessage("TO", "Message", ["param1" => "val"], ["header1" => "val"]);`
 
 - Using a different gateway `SmsApi::gateway('GATEWAY_NAME')->sendMessage("TO", "Message");`
 
@@ -140,7 +171,7 @@ class ExampleNotification extends Notification
     }
 }
 ```
-You can also use `->params(["param1" => "val"])` to add extra parameters to the request.
+You can also use `->params(["param1" => "val"])` to add extra parameters to the request and `->headers(["header1" => "val"])` to add extra headers to the request.
 
 ## Support
 Feel free to post your issues in the issues section.
