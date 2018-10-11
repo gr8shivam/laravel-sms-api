@@ -3,10 +3,11 @@
 return [
 
     'country_code' => '91', //Country code to be added
-    'default' => env('SMS_API_DEFAULT_GATEWAY', 'msg91'), //Choose default gateway
+    'default' => env('SMS_API_DEFAULT_GATEWAY', 'gateway_name'), //Choose default gateway
     
 //    Gateway Configuration
     'gateway_name' => [
+        'method' => 'GET', //Choose Request Method (GET/POST) Default:GET
         'url' => 'BaseUrl', //Base URL
         'params' => [
             'send_to_param_name' => '', //Send to Parameter Name
@@ -18,6 +19,13 @@ return [
                 //More params can be added
             ],
         ],
+        'headers' => [
+            'header1' => '',
+            'header2' => '',
+            //More headers can be added
+        ],
+//        'json' => true, // OPTIONAL: Use if you want the params to be sent in JSON format instead of query params (accepts true/false)
+//        'wrapper' => 'wrapper_name', // OPTIONAL: Use only if you want the JSON request to be wrapped (accepts wrapper name)
         'add_code' => true, //Include Country Code (true/false)
     ],
     
@@ -45,11 +53,12 @@ return [
         'add_code' => true, //Include Country Code
     ],
 
-//    MSG91
+    //MSG91
     'msg91' => [
-        'url' => 'https://control.msg91.com/api/v2/sendsms?',
+        'method' => 'POST', //Choose Request Method (GET/POST)
+        'url' => 'https://control.msg91.com/api/v2/sendsms?', //Base URL
         'params' => [
-            'send_to_param_name' => 'mobiles', //Send to Parameter Name
+            'send_to_param_name' => 'to', //Send to Parameter Name
             'msg_param_name' => 'message', //Message Parameter Name
             'others' => [
                 'authkey' => '', //Your auth key
@@ -58,7 +67,9 @@ return [
                 'country' => '91',
             ],
         ],
-        'add_code' => false, //Include Country Code
+        'json' => true, // Use if you want the params to be sent in JSON format instead of query params
+        'wrapper' => 'sms', //Optional, use only if you want the JSON request to be wrapped
+        'add_code' => false, //Include Country Code (true/false)
     ]
 
 ];
