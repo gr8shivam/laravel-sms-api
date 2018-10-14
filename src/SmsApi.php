@@ -84,10 +84,16 @@ class SmsApi
         $url = $this->config['url'];
 
         $mobile = $this->config['add_code'] ? $this->addCountryCode($to) : $to;
-        if (is_array($mobile)) {
-            //Flatten Array only if JSON false
-            if (!(isset($this->config['json']) && $this->config['json'])) {
+        if (!(isset($this->config['json']) && $this->config['json'])) {
+        	//Flatten Array if JSON false
+            if (is_array($mobile)){
                 $mobile = $this->composeBulkMobile($mobile);
+            }
+        }
+        else{
+        	//Transform to Array if JSON true
+            if (!is_array($mobile)){
+                $mobile = array($mobile);
             }
         }
 
