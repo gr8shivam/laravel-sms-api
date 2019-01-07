@@ -73,6 +73,9 @@ Use can define multiple gateway configs like this:-
 ##### `json` Parameter
 The `json` parameter accepts `true/false`. When `true`, it sends `params` as a JSON payload. It also takes care of `'Content-Type' => 'application/json'` header.
 
+##### `jsonToArray` Parameter
+The `jsonToArray` parameter accepts `true/false`. When `true`, it sends a single mobile number in an encapsulated array in the JSON payload. When `false`, a single mobile number is sent as text. Valid only when `json` parameter is `true`. 
+
 ##### `wrapper` Parameter
 The `wrapper` is a special parameter which will be required only with some gateways. It wraps the JSON payload in the following structure:
 ```
@@ -87,7 +90,8 @@ The `wrapper` is a special parameter which will be required only with some gatew
   ]
 ```
 
-You can also add Wrapper Parameters from the gatway config or while calling the send function like `smsapi()->addWrapperParams(['wrapperParam1'=>'paramVal'])->sendMessage("TO", "Message")`
+##### `wrapperParams` Parameter
+Accepts array. Used to add custom Wrapper Parameters. Parameters can also be added while calling the `smsapi()` function like `smsapi()->addWrapperParams(['wrapperParam1'=>'paramVal'])->sendMessage("TO", "Message")`
 
 ## Usage
 ### Direct Use
