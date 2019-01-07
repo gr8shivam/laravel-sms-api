@@ -16,7 +16,9 @@ class SmsApi
     private $gateway;
     private $request = '';
     private $response = '';
+    private $responseCode = '';
     private $country_code = null;
+    private $wrapperParams=[];
 
     /**
      * SmsApi constructor.
@@ -64,6 +66,19 @@ class SmsApi
     }
 
     /**
+     * Adds wrapper Variables
+     *
+     * @param array $wrapperVars
+     * @return $this
+     */
+    //Addition
+    public function addWrapperParams($wrapperParams)
+    {
+        $this->wrapperParams = $wrapperParams;
+        return $this;
+    }
+
+    /**
      * Send message
      *
      * @param $to
@@ -85,15 +100,16 @@ class SmsApi
 
         $mobile = $this->config['add_code'] ? $this->addCountryCode($to) : $to;
         if (!(isset($this->config['json']) && $this->config['json'])) {
-        	//Flatten Array if JSON false
+            //Flatten Array if JSON false
             if (is_array($mobile)){
                 $mobile = $this->composeBulkMobile($mobile);
             }
         }
         else{
-        	//Transform to Array if JSON true
+            //Transform to Array if JSON true
             if (!is_array($mobile)){
-                $mobile = array($mobile);
+                $mobile = (isset($this->config['jsonToArray']) ? $this->config['jsonToArray'] : true) ? array($mobile) : $mobile;
+                // $mobile = array($mobile);
             }
         }
 
@@ -104,6 +120,8 @@ class SmsApi
         //Check wrapper for JSON Payload
         $wrapper = isset($this->config['wrapper']) ? $this->config['wrapper'] : NULL;
 
+        $wrapperParams = array_merge($this->wrapperParams,(isset($this->config['wrapperParams']) ? $this->config['wrapperParams'] : []));
+
         $send_to_param_name = $this->config['params']['send_to_param_name'];
         $msg_param_name = $this->config['params']['msg_param_name'];
 
@@ -113,6 +131,10 @@ class SmsApi
         } else {
             $params[$send_to_param_name] = $mobile;
             $params[$msg_param_name] = $message;
+        }
+
+        if ($wrapper && $wrapperParams) {
+            $send_vars = array_merge($send_vars, $wrapperParams);
         }
 
         if ($extra_params) {
@@ -160,14 +182,27 @@ class SmsApi
                 );
             }
 
-            $this->response = $promise->wait()->getBody()->getContents();
+            $response = $promise->wait();
+            $this->response = $response->getBody()->getContents();
+            $this->responseCode = $response->getStatusCode();
+
+            Log::info('SMS Gateway Response Code: '. $this->responseCode);
+            Log::info('SMS Gateway Response Body: \n'. $this->response);
+
+//            $this->response = $promise->wait()->getBody()->getContents();
 
         } catch (RequestException $e) {
             if ($e->hasResponse()) {
-                $this->response = $e->getResponseBodySummary($e->getResponse());
+                $response = $e->getResponse();
+                $this->response = $e->getResponseBodySummary($response);
+                $this->responseCode = $response->getStatusCode();
+
+                Log::error('SMS Gateway Response Code: '. $this->responseCode);
+                Log::error('SMS Gateway Response Body: \n'. $this->response);
+
+//                $this->response = $e->getResponseBodySummary($e->getResponse());
             }
         }
-        Log::info('SMS Gateway Response: ' . $this->response);
         return $this;
     }
 
@@ -247,5 +282,15 @@ class SmsApi
     public function response()
     {
         return $this->response;
+    }
+
+    /**
+     * Return Response Code
+     *
+     * @return string
+     */
+    public function getResponseCode()
+    {
+        return $this->responseCode;
     }
 }
