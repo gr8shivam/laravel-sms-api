@@ -1,4 +1,4 @@
-[![Travis CI](https://travis-ci.org/gr8shivam/laravel-sms-api.svg?branch=master)](https://travis-ci.org/gr8shivam/laravel-sms-api) [![Packagist](https://img.shields.io/packagist/v/gr8shivam/laravel-sms-api.svg)](https://packagist.org/packages/gr8shivam/laravel-sms-api) [![Packagist](https://img.shields.io/packagist/dt/gr8shivam/laravel-sms-api.svg)](https://packagist.org/packages/gr8shivam/laravel-sms-api) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/gr8shivam/laravel-sms-api/master/LICENSE)
+[![Packagist](https://img.shields.io/packagist/v/gr8shivam/laravel-sms-api.svg)](https://packagist.org/packages/gr8shivam/laravel-sms-api) [![Packagist](https://img.shields.io/packagist/dt/gr8shivam/laravel-sms-api.svg)](https://packagist.org/packages/gr8shivam/laravel-sms-api) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/gr8shivam/laravel-sms-api/master/LICENSE)
 
 # Integrate SMS API with Laravel
 Laravel package to provide SMS API integration. Any SMS vendor that provides REST API can be used.
@@ -87,6 +87,8 @@ The `wrapper` is a special parameter which will be required only with some gatew
   ]
 ```
 
+You can also add Wrapper Parameters from the gatway config or while calling the send function like `smsapi()->addWrapperParams(['wrapperParam1'=>'paramVal'])->sendMessage("TO", "Message")`
+
 ## Usage
 ### Direct Use
 Use the `smsapi()` helper function or `SmsApi` facade to send the messages.
@@ -172,6 +174,9 @@ class ExampleNotification extends Notification
 }
 ```
 You can also use `->params(["param1" => "val"])` to add extra parameters to the request and `->headers(["header1" => "val"])` to add extra headers to the request.
+
+### Getting Response
+You can get response by using `->response()` or get the Response Code using `->getResponseCode()`. For example, `smsapi()->sendMessage("TO","MESSAGE")->response();`
 
 ## Support
 Feel free to post your issues in the issues section.
