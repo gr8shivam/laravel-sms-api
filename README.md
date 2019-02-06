@@ -3,6 +3,8 @@
 # Integrate SMS API with Laravel
 Laravel package to provide SMS API integration. Any SMS vendor that provides REST API can be used.
 
+#### [Star ⭐](https://github.com/gr8shivam/laravel-sms-api) repo to show suport 😊
+
 ## Installation
 
 ### Install Package
