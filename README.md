@@ -181,6 +181,13 @@ class ExampleNotification extends Notification
 ```
 You can also use `->params(["param1" => "val"])` to add extra parameters to the request and `->headers(["header1" => "val"])` to add extra headers to the request.
 
+#### On-Demand Notifications
+Sometimes you may need to send a notification to someone who is not stored as a "user" of your application. Using the Notification::route method, you may specify ad-hoc notification routing information before sending the notification:
+```
+Notification::route(\Gr8Shivam\SmsApi\Notifications\SmsApiChannel::class, 'TO')
+                ->notify(new ExampleNotification());
+```
+
 ### Getting Response
 You can get response by using `->response()` or get the Response Code using `->getResponseCode()`. For example, `smsapi()->sendMessage("TO","MESSAGE")->response();`
 
