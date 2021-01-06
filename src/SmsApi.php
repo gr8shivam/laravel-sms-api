@@ -5,6 +5,7 @@ namespace Gr8Shivam\SmsApi;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Message;
 use Illuminate\Support\Facades\Log;
 use GuzzleHttp\Exception\RequestException;
 use Gr8Shivam\SmsApi\Exception\InvalidMethodException;
@@ -194,13 +195,11 @@ class SmsApi
         } catch (RequestException $e) {
             if ($e->hasResponse()) {
                 $response = $e->getResponse();
-                $this->response = $e->getResponseBodySummary($response);
+                $this->response = Message::bodySummary($response);
                 $this->responseCode = $response->getStatusCode();
 
                 Log::error('SMS Gateway Response Code: '. $this->responseCode);
                 Log::error('SMS Gateway Response Body: \n'. $this->response);
-
-//                $this->response = $e->getResponseBodySummary($e->getResponse());
             }
         }
         return $this;
