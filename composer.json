@@ -1,9 +1,9 @@
 {
-  "name": "gr8shivam/laravel-sms-api",
-  "version":"3.0.5",
-  "description": "Laravel package to provide SMS API integration. Any SMS vendor that provides REST API can be used. SMS-API channel for Laravel notifications also included.",
-  "license": "MIT",
-  "keywords": [
+    "name": "gr8shivam/laravel-sms-api",
+    "version": "3.0.6",
+    "description": "Laravel package to provide SMS API integration. Any SMS vendor that provides REST API can be used. SMS-API channel for Laravel notifications also included.",
+    "license": "MIT",
+    "keywords": [
         "laravel sms",
         "laravel notifications",
         "laravel sms sender",
@@ -11,39 +11,39 @@
         "laravel sms api",
         "laravel sms web api"
     ],
-  "homepage": "https://github.com/gr8shivam/laravel-sms-api",
-  "authors": [
-    {
-      "name": "Shivam Agarwal",
-      "email": "gr8shivam25@gmail.com",
-      "homepage": "https://github.com/gr8shivam",
-      "role": "Developer"
-    }
-  ],
-  "require": {
-    "php": ">=5.6.4",
-    "illuminate/support": "^5.0|^6.0|^7.0|^8.0|^9.0",
-    "guzzlehttp/guzzle": "~6.0|^7.0"
-  },
-  "require-dev": {
-     "phpunit/phpunit": "^5.3",
-     "orchestra/testbench": "~3.0"
-  },
-  "autoload": {
-    "psr-4": {
-      "Gr8Shivam\\SmsApi\\": "src"
+    "homepage": "https://github.com/gr8shivam/laravel-sms-api",
+    "authors": [
+        {
+            "name": "Shivam Agarwal",
+            "email": "gr8shivam25@gmail.com",
+            "homepage": "https://github.com/gr8shivam",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.6.4",
+        "illuminate/support": "^5.0|^6.0|^7.0|^8.0|^9.0|^10.0",
+        "guzzlehttp/guzzle": "~6.0|^7.0"
     },
-    "files": [
-      "src/functions.php"
-    ]
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Gr8Shivam\\SmsApi\\Tests\\": "tests/"
-    }
-  },
-  "minimum-stability":"stable",
-  "extra": {
+    "require-dev": {
+        "phpunit/phpunit": "^5.3|^9.5.10",
+        "orchestra/testbench": "~3.0|^8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Gr8Shivam\\SmsApi\\": "src"
+        },
+        "files": [
+            "src/functions.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Gr8Shivam\\SmsApi\\Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "stable",
+    "extra": {
         "laravel": {
             "providers": [
                 "Gr8Shivam\\SmsApi\\SmsApiServiceProvider"
