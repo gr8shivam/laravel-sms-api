@@ -4,6 +4,7 @@ namespace Gr8Shivam\SmsApi\Notifications;
 
 use Gr8Shivam\SmsApi\Notifications\SmsApiMessage;
 use Gr8Shivam\SmsApi\SmsApi;
+use Illuminate\Notifications\AnonymousNotifiable;
 use Illuminate\Notifications\Notification;
 
 class SmsApiChannel
@@ -28,7 +29,13 @@ class SmsApiChannel
      */
     public function send($notifiable, Notification $notification)
     {
-        if (! $mobile = $notifiable->routeNotificationFor('sms_api')) {
+        if ($notifiable instanceof AnonymousNotifiable) {
+            $mobile = $notifiable->routes[SmsApiChannel::class];
+        } else {
+            $mobile = $notifiable->routeNotificationFor('sms_api');
+        }
+
+        if (!$mobile) {
             return;
         }
 
