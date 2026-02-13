@@ -1,17 +1,22 @@
 {
     "name": "gr8shivam/laravel-sms-api",
-    "version": "3.0.6",
-    "description": "Laravel package to provide SMS API integration. Any SMS vendor that provides REST API can be used. SMS-API channel for Laravel notifications also included.",
-    "license": "MIT",
+    "description": "A modern, flexible Laravel package for integrating any SMS gateway with REST API support",
     "keywords": [
-        "laravel sms",
-        "laravel notifications",
-        "laravel sms sender",
-        "laravel sms notifications",
-        "laravel sms api",
-        "laravel sms web api"
+        "laravel",
+        "sms",
+        "api",
+        "gateway",
+        "notification",
+        "twilio",
+        "msg91",
+        "nexmo",
+        "vonage",
+        "plivo",
+        "sinch"
     ],
     "homepage": "https://github.com/gr8shivam/laravel-sms-api",
+    "type": "library",
+    "license": "MIT",
     "authors": [
         {
             "name": "Shivam Agarwal",
@@ -20,18 +25,25 @@
             "role": "Developer"
         }
     ],
+    "support": {
+        "issues": "https://github.com/gr8shivam/laravel-sms-api/issues",
+        "source": "https://github.com/gr8shivam/laravel-sms-api",
+        "docs": "https://github.com/gr8shivam/laravel-sms-api#readme"
+    },
     "require": {
-        "php": ">=5.6.4",
-        "illuminate/support": "^5.0|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
-        "guzzlehttp/guzzle": "~6.0|^7.0"
+        "php": "^8.1",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "illuminate/support": "^10.0|^11.0|^12.0",
+        "guzzlehttp/guzzle": "^7.8"
     },
     "require-dev": {
-        "phpunit/phpunit": "^5.3|^9.5.10|^10.5",
-        "orchestra/testbench": "~3.0|^8.0|^9.0"
+        "orchestra/testbench": "^8.0|^9.0",
+        "phpunit/phpunit": "^10.0|^11.0"
     },
     "autoload": {
         "psr-4": {
-            "Gr8Shivam\\SmsApi\\": "src"
+            "Gr8Shivam\\SmsApi\\": "src/"
         },
         "files": [
             "src/functions.php"
@@ -42,7 +54,9 @@
             "Gr8Shivam\\SmsApi\\Tests\\": "tests/"
         }
     },
-    "minimum-stability": "stable",
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    },
     "extra": {
         "laravel": {
             "providers": [
@@ -52,5 +66,7 @@
                 "SmsApi": "Gr8Shivam\\SmsApi\\SmsApiFacade"
             }
         }
-    }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
 }
