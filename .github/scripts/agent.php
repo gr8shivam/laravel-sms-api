@@ -31,7 +31,7 @@ $aiData = [
 $jsonPayload = json_encode($aiData);
 
 // 3. Call the Gemini API with Exponential Backoff Retry Logic
-$apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash:generateContent?key=" . $apiKey;
+$apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=" . $apiKey;
 
 $maxRetries = 3;
 $attempt = 0;
