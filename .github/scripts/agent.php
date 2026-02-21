@@ -6,9 +6,11 @@ $issueNumber = getenv('ISSUE_NUMBER');
 $issueBody = getenv('ISSUE_BODY');
 $repo = getenv('REPO_NAME');
 
-// 2. Read context and build prompt
-// Using @ to suppress warnings if the file doesn't exist, and providing a fallback
-$packageDocs = @file_get_contents(__DIR__ . '/../../README.md') ?: "Documentation not found.";
+// 2. The Agent's Prompt (Context + Task)
+
+// Dynamically read your package's documentation file
+// (Assuming agent.php is in .github/scripts/ and README is in the root folder)
+$packageDocs = file_get_contents(__DIR__ . '/../../README.md');
 
 $systemPrompt = "You are the lead maintainer of a Laravel SMS notification package. 
 Read the following GitHub issue. Determine if it is a bug or a feature request. 
@@ -23,65 +25,23 @@ Use the following official documentation as your ABSOLUTE SOURCE OF TRUTH for al
 
 Issue Text: " . $issueBody;
 
+// 3. Call the Free Gemini API
 $aiData = [
     "contents" => [
         ["parts" => [["text" => $systemPrompt]]]
     ]
 ];
-$jsonPayload = json_encode($aiData);
 
-// 3. Call the Gemini API with Exponential Backoff Retry Logic
-$apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash:generateContent?key=" . $apiKey;
+$ch = curl_init("https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=" . $apiKey);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($aiData));
 
-$maxRetries = 3;
-$attempt = 0;
-$success = false;
-$response = null;
+$response = json_decode(curl_exec($ch), true);
+$aiReply = $response['candidates'][0]['content']['parts'][0]['text'] ?? "Thanks for opening this issue! I will look into it shortly.";
 
-while ($attempt < $maxRetries && !$success) {
-    $attempt++;
-    
-    $ch = curl_init($apiUrl);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonPayload);
-    
-    $rawResult = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-    
-    // If the HTTP code is 200 (OK), parse the JSON
-    if ($httpCode == 200) {
-        $response = json_decode($rawResult, true);
-        if (isset($response['candidates'])) {
-            $success = true;
-            break; // Break out of the while loop!
-        }
-    }
-    
-    // If we reach here, it failed. Print to the GitHub Action logs.
-    echo "Attempt $attempt failed. HTTP Code: $httpCode\n";
-    echo "Raw Result: $rawResult\n";
-    
-    // If we have retries left, wait before trying again
-    if ($attempt < $maxRetries) {
-        $sleepTime = pow(2, $attempt); // 2 seconds, then 4, then 8
-        echo "Server busy. Retrying in $sleepTime seconds...\n";
-        sleep($sleepTime);
-    }
-}
-
-// 4. Handle the final result
-if (!$success) {
-    echo "🚨 API ERROR: Failed after $maxRetries attempts. 🚨\n";
-    // A graceful fallback message so the user still gets acknowledged
-    $aiReply = "Thanks for opening this issue! Our automated assistant is experiencing high server load right now, but a human maintainer will look into this shortly.";
-} else {
-    $aiReply = $response['candidates'][0]['content']['parts'][0]['text'];
-}
-
-// 5. Post the response back to GitHub
+// 4. Post the AI's response back to the GitHub Issue
 $githubUrl = "https://api.github.com/repos/{$repo}/issues/{$issueNumber}/comments";
 $githubData = json_encode(["body" => "**AI Agent Reply:**\n\n" . $aiReply]);
 
@@ -95,7 +55,6 @@ curl_setopt($chGit, CURLOPT_HTTPHEADER, [
 curl_setopt($chGit, CURLOPT_POST, true);
 curl_setopt($chGit, CURLOPT_POSTFIELDS, $githubData);
 curl_exec($chGit);
-curl_close($chGit);
 
 echo "Agent successfully replied to issue #$issueNumber\n";
 ?>
