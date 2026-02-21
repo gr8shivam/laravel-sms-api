@@ -7,10 +7,22 @@ $issueBody = getenv('ISSUE_BODY');
 $repo = getenv('REPO_NAME');
 
 // 2. The Agent's Prompt (Context + Task)
+
+// Dynamically read your package's documentation file
+// (Assuming agent.php is in .github/scripts/ and README is in the root folder)
+$packageDocs = file_get_contents(__DIR__ . '/../../README.md');
+
 $systemPrompt = "You are the lead maintainer of a Laravel SMS notification package. 
 Read the following GitHub issue. Determine if it is a bug or a feature request. 
 Write a concise, polite reply acknowledging the issue. 
-CRITICAL INSTRUCTION: If the user is struggling with payload formatting or a specific function, provide a very short, targeted PHP code snippet (under 15 lines) to help them troubleshoot or implement the fix. Do not write full files, only the relevant snippet.
+CRITICAL INSTRUCTION: If the user needs help with code, provide a short PHP snippet (under 15 lines). 
+
+Use the following official documentation as your ABSOLUTE SOURCE OF TRUTH for all code snippets. Do not invent functions that do not exist in this documentation:
+
+--- PACKAGE DOCUMENTATION ---
+" . $packageDocs . "
+-----------------------------
+
 Issue Text: " . $issueBody;
 
 // 3. Call the Free Gemini API
